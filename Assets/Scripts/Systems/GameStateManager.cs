@@ -11,8 +11,7 @@ public enum GameState
 
 public class GameStateManager : MonoBehaviour
 {
-    public GameState State;
-
+    [SerializeField] UIManager uiManager;
     public GameState currentState { get; private set; }
     public GameState previousState { get; private set; }
 
@@ -21,6 +20,7 @@ public class GameStateManager : MonoBehaviour
 
     private void Start()
     {
+        uiManager = GetComponent<UIManager>();
         SetState(GameState.Init);
     }
 
@@ -33,9 +33,38 @@ public class GameStateManager : MonoBehaviour
         currentActiveState = currentState.ToString();
     }
 
-    private void OnGameStateChanged()
+    private void OnGameStateChanged(GameState previousState, GameState newState)
     {
+        switch(newState)
+        {
+            case GameState.None:
+                Debug.Log("No GameState");
 
+                break;
+            case GameState.Init:
+                Debug.Log("GameState = Init");
+                
+                break;
+
+            case GameState.MainMenu:
+                Debug.Log("GameState = MainMenu");
+                uiManager.ShowMainMenu();
+                break;
+
+            case GameState.Gameplay:
+                Debug.Log("GameState = Gameplay");
+                uiManager.ShowGameplayUI();
+                break;
+
+            case GameState.Paused:
+                Debug.Log("GameState = Paused");
+                uiManager.ShowPausedUI();
+                break;
+
+            default:
+                break;
+                
+        }
     }
 
     private void Update()
