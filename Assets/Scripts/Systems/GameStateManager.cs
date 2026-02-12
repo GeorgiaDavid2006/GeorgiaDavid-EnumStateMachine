@@ -83,13 +83,7 @@ public class GameStateManager : MonoBehaviour
 
     private void Update()
     {
-       if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (currentState == GameState.Gameplay)
-            {
-                SetState(GameState.GameOver);
-            }
-        }
+       
     }
 
     public void MainMenu()
@@ -138,6 +132,13 @@ public class GameStateManager : MonoBehaviour
 
     public void GameOver()
     {
-        SetState(GameState.GameOver);
+        if (currentState == GameState.Gameplay)
+        {
+            SetState(GameState.GameOver);
+        }
+        else
+        {
+            return;
+        }
     }
 }
