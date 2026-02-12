@@ -6,7 +6,9 @@ public enum GameState
     Init,
     MainMenu,
     Gameplay,
-    Paused
+    Paused,
+    Settings,
+    GameOver
 }
 
 public class GameStateManager : MonoBehaviour
@@ -20,7 +22,7 @@ public class GameStateManager : MonoBehaviour
 
     private void Start()
     {
-        uiManager = GetComponent<UIManager>();
+        uiManager.GetComponent<UIManager>();
         SetState(GameState.Init);
     }
 
@@ -31,6 +33,8 @@ public class GameStateManager : MonoBehaviour
 
         previousActiveState = previousState.ToString();
         currentActiveState = currentState.ToString();
+
+        OnGameStateChanged(previousState, currentState);
     }
 
     private void OnGameStateChanged(GameState previousState, GameState newState)
@@ -61,6 +65,16 @@ public class GameStateManager : MonoBehaviour
                 uiManager.ShowPausedUI();
                 break;
 
+            case GameState.Settings:
+                Debug.Log("GameState = Settings");
+                uiManager.ShowOptionsUI();
+                break;
+
+            case GameState.GameOver:
+                Debug.Log("GameState = Game Over");
+                uiManager.ShowGameOverUI();
+                break;
+
             default:
                 break;
                 
@@ -69,6 +83,61 @@ public class GameStateManager : MonoBehaviour
 
     private void Update()
     {
-       
+       if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (currentState == GameState.Gameplay)
+            {
+                SetState(GameState.GameOver);
+            }
+        }
+    }
+
+    public void MainMenu()
+    {
+        SetState(GameState.MainMenu);
+    }
+
+    public void StartGame()
+    {
+        SetState(GameState.Gameplay);
+    }
+
+    public void TogglePause()
+    {
+        Debug.Log("Escape pressed");
+
+        if (currentState == GameState.Paused)
+        {
+            if (currentState == GameState.Gameplay) return;
+            SetState(GameState.Gameplay);
+        }
+
+        else if (currentState == GameState.Gameplay)
+        {
+            if (currentState == GameState.Paused) return;
+            SetState(GameState.Paused);
+        }
+    }
+
+    public void Settings()
+    {
+        SetState(GameState.Settings);
+    }
+
+    public void ReturnFromSettings()
+    {
+        if (previousState == GameState.MainMenu)
+        {
+            SetState(GameState.MainMenu);
+        }
+        else if (previousState == GameState.Paused)
+        {
+            SetState(GameState.Paused);
+        }
+    }
+
+    public void GameOver()
+    {
+        SetState(GameState.GameOver);
     }
 }
